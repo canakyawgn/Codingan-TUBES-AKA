@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip> // Untuk format output
+
+// Struktur untuk merepresentasikan item di keranjang belanja
+struct Product {
+    std::string name;
+    double price;
+    int quantity;
+};
+
+// Fungsi iteratif untuk menghitung total harga
+double totalPriceIterative(const std::vector<Product>& cart) {
+    double total = 0;
+    for (const auto& item : cart) {
+        total += item.price * item.quantity;
+    }
+    return total;
+}
+
+// Fungsi rekursif untuk menghitung total harga
+double totalPriceRecursive(const std::vector<Product>& cart, int index = 0) {
+    if (index == cart.size()) { // Basis rekursi
+        return 0;
+    }
+    return (cart[index].price * cart[index].quantity) + totalPriceRecursive(cart, index + 1);
+}
+
+// Fungsi untuk menampilkan detail keranjang belanja
+void displayCart(const std::vector<Product>& cart) {
+    std::cout << "\nKeranjang Belanja:\n";
+    std::cout << std::left << std::setw(20) << "Nama Produk"
+              << std::setw(10) << "Harga"
+              << std::setw(10) << "Jumlah"
+              << std::setw(15) << "Total" << "\n";
+    std::cout << "----------------------------------------------------\n";
+    for (const auto& item : cart) {
+        double total = item.price * item.quantity;
+        std::cout << std::left << std::setw(20) << item.name
+                  << std::setw(10) << item.price
+                  << std::setw(10) << item.quantity
+                  << std::setw(15) << total << "\n";
+    }
+    std::cout << "----------------------------------------------------\n";
+}
+
+// Fungsi untuk menambahkan produk ke keranjang belanja
+void addProduct(std::vector<Product>& cart, const std::string& name, double price, int quantity) {
+    cart.push_back({name, price, quantity});
+}
+
+int main() {
+    // Keranjang belanja
+    std::vector<Product> cart;
+
+    // Menu interaktif untuk menambahkan produk
+    char choice;
+    do {
+        std::string name;
+        double price;
+        int quantity;
+
+        std::cout << "\nMasukkan nama produk: ";
+        std::cin >> name;
+        std::cout << "\nMasukkan harga produk: ";
+        std::cin >> price;
+        std::cout << "\nMasukkan jumlah produk: ";
+        std::cin >> quantity;
+
+        addProduct(cart, name, price, quantity);
+
+        std::cout << "Apakah Anda ingin menambahkan produk lagi? (y/n): ";
+        std::cin >> choice;
+    } while (choice == 'y' || choice == 'Y');
+
+    // Menampilkan detail keranjang belanja
+    displayCart(cart);
+
+    // Hitung total harga menggunakan kedua pendekatan
+    double iterativeTotal = totalPriceIterative(cart);
+    double recursiveTotal = totalPriceRecursive(cart);
+
+    // Cetak hasilnya
+    std::cout << "\nTotal harga (iteratif): " << iterativeTotal << std::endl;
+    std::cout << "Total harga (rekursif): " << recursiveTotal << std::endl;
+
+    return 0;
+}
